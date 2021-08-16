@@ -19,3 +19,7 @@ dist/debian/mariner3d/
 
 # Sphinx
 _build/
+/.vs/ProjectSettings.json
+/.vs/slnx.sqlite
+.vs/VSWorkspaceState.json
+.vs/mariner/v15/.suo
