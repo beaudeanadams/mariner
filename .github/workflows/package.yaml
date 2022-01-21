@@ -77,7 +77,7 @@ jobs:
           context: .
           file: Dockerfile
           platforms: linux/arm64
-          push: false
+          load: true
           tags: packager-image:latest
 
       #- uses: satackey/action-docker-layer-caching@v0.0.11
