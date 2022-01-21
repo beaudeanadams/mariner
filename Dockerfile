@@ -1,9 +1,8 @@
 FROM balenalib/raspberry-pi-debian:latest
 
 RUN apt-get update && apt-get -y upgrade && apt-get update
-RUN apt-get remove debhelper && apt-get install dh-systemd && apt-get install debhelper -t xenial-backports
-RUN apt-get -y install sudo dpkg-dev debhelper dh-virtualenv \
-  dh-systemd python3 python3-venv
+RUN wget http://ftp.us.debian.org/debian/pool/main/d/debhelper/dh-systemd_13.2.1_all.deb && dpkg -i dh-systemd_13.2.1_all.deb 
+RUN apt-get -y install sudo dpkg-dev debhelper dh-virtualenv python3 python3-venv
 
 RUN apt-get -y install libxslt-dev libxml2-dev
 RUN apt-get -y install build-essential libssl-dev libffi-dev python3-dev
