@@ -1,6 +1,7 @@
 FROM balenalib/raspberry-pi-debian:latest
 
 RUN apt-get update && apt-get -y upgrade && apt-get update
+RUN apt-get remove debhelper && apt-get install dh-systemd && apt-get install debhelper -t xenial-backports
 RUN apt-get -y install sudo dpkg-dev debhelper dh-virtualenv \
   dh-systemd python3 python3-venv
 
