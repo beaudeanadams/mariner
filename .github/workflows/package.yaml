@@ -41,14 +41,22 @@ jobs:
       - name: Fetch new list of packages
         run: sudo apt-get update
 
-      - name: Install qemu
-        run: >-
-          sudo apt-get -y --no-install-recommends install binfmt-support
-          qemu-user-static
-      - name: Setup docker with qemu
-        run: >-
-          docker run --rm --privileged multiarch/qemu-user-static:register
-          --reset
+      #- name: Install qemu
+      #  run: >-
+      #    sudo apt-get -y --no-install-recommends install binfmt-support
+      #    qemu-user-static
+      #- name: Setup docker with qemu
+      #  run: >-
+      #    docker run --rm --privileged multiarch/qemu-user-static:register
+      #    --reset
+      
+      - 
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
 
       - name: Install yarn packages
         run: cd frontend/ && yarn install
@@ -60,11 +68,22 @@ jobs:
           echo "DEBIAN_PKG_FILENAME=mariner3d_${{
             env.DEBIAN_PKG_FULL_VERSION
           }}_armhf.deb" >> $GITHUB_ENV
+          
+      -
+        name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile
+          platforms: linux/arm64
+          push: false
+          tags: packager-image
 
-      - uses: satackey/action-docker-layer-caching@v0.0.11
-        continue-on-error: true
-      - name: Build Docker Image
-        run: docker build -f Dockerfile -t packager-image .
+      #- uses: satackey/action-docker-layer-caching@v0.0.11
+      #  continue-on-error: true
+      #- name: Build Docker Image
+      #  run: docker build --platform linux/arm64 -f Dockerfile -t packager-image .
 
       - name: Create docker container
         run: docker create --name packager packager-image
