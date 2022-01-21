@@ -78,7 +78,7 @@ jobs:
           file: Dockerfile
           platforms: linux/arm64
           push: false
-          tags: packager-image
+          tags: packager-image:latest
 
       #- uses: satackey/action-docker-layer-caching@v0.0.11
       #  continue-on-error: true
