@@ -7,6 +7,7 @@ from mariner.file_formats.cbddlp import CBDDLPFile
 from mariner.file_formats.fdg import FDGFile
 from mariner.file_formats.photon import PhotonFile
 import logging
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 

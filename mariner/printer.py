@@ -86,8 +86,9 @@ class ChiTuPrinter:
     def get_firmware_version(self) -> str:
         logger.debug("Obtain the Firmware Version Command Requested")
         data = self._send_and_read(b"M4002")
-        return self._extract_response_with_regex(
-            "^ok ([a-zA-Z0-9_.]+)\n$", data).group(1)
+        return self._extract_response_with_regex("^ok ([a-zA-Z0-9_.]+)\n$", data).group(
+            1
+        )
 
     def get_state(self) -> str:
         logger.debug("Obtain State Command Requested")
@@ -103,11 +104,13 @@ class ChiTuPrinter:
                 # be Firmware 4.4.3 which does not support M4000
                 self._exclude4000 = True
                 logger.debug(
-                    "Disabling M400n commands because it seems" +
-                    " printer does not support them.")
+                    "Disabling M400n commands because it seems"
+                    + " printer does not support them."
+                )
             else:
                 match = self._extract_response_with_regex(
-                    "D:([0-9]+)/([0-9]+)/([0-9]+)", data)
+                    "D:([0-9]+)/([0-9]+)/([0-9]+)", data
+                )
 
                 current_byte = int(match.group(1))
                 total_bytes = int(match.group(2))
@@ -118,7 +121,8 @@ class ChiTuPrinter:
             logger.debug(f"M27 response = {data}")
             if "not printing now!" not in data:
                 match = self._extract_response_with_regex(
-                        "byte ([0-9]+)/([0-9]+)", data)
+                    "byte ([0-9]+)/([0-9]+)", data
+                )
                 current_byte = int(match.group(1))
                 total_bytes = int(match.group(2))
                 self._totalbyteCount = total_bytes
@@ -173,10 +177,12 @@ class ChiTuPrinter:
                 # 4.4.3 which does not support M4006
                 self._exclude4000 = True
                 logger.debug(
-                    "Disabling M400n commands because " +
-                    "it seems printer does not support them.")
+                    "Disabling M400n commands because "
+                    + "it seems printer does not support them."
+                )
             selected_file = str(
-                self._extract_response_with_regex("ok '([^']+)'\r\n", data).group(1))
+                self._extract_response_with_regex("ok '([^']+)'\r\n", data).group(1)
+            )
             # normalize the selected file by removing the leading slash, which is
             # sometimes returned by the printer
             return re.sub("^/", "", selected_file)
@@ -185,11 +191,14 @@ class ChiTuPrinter:
                 logger.debug(f"Looking for a file with size {self._totalbyteCount}")
                 directory = os.fsencode(config.get_files_directory())
                 for file in os.listdir(directory):
-                    if os.stat(os.path.join(directory,
-                                            file)).st_size == self._totalbyteCount:
+                    if (
+                        os.stat(os.path.join(directory, file)).st_size
+                        == self._totalbyteCount
+                    ):
                         logger.debug(
-                            f"found {os.fsdecode(file)} -" +
-                            f"{str(os.stat(os.path.join(directory, file)).st_size)}")
+                            f"found {os.fsdecode(file)} -"
+                            + f"{str(os.stat(os.path.join(directory, file)).st_size)}"
+                        )
                         self._printName = os.fsdecode(file)
                         break
             return self._printName
@@ -267,13 +276,15 @@ class ChiTuPrinter:
     def _obtain_line_number(self, response: str) -> str:
         # relevant responses contain a line number
         parsedResponse = self._extract_response_with_regex(
-            "^([ESo][rDk]).N:([0-9.]+)\r\n", response)
+            "^([ESo][rDk]).N:([0-9.]+)\r\n", response
+        )
         responseLineCount = int(parsedResponse.group(2))
         if responseLineCount != self._lineCount:
             tmpLineCount = self._lineCount
             self._lineCount = responseLineCount + 1
             raise UnexpectedResponseLineNumber(
-                str(responseLineCount), str(tmpLineCount))
+                str(responseLineCount), str(tmpLineCount)
+            )
         else:
             logger.debug(f"Line # is {responseLineCount}")
             if parsedResponse.group(1) == "ok":
@@ -281,9 +292,7 @@ class ChiTuPrinter:
                 self._lineCount += 1
         return parsedResponse.group(1)
 
-    def _send_and_read(self, data: bytes,
-                       timeout_secs: Optional[float] =
-                       None) -> str:
+    def _send_and_read(self, data: bytes, timeout_secs: Optional[float] = None) -> str:
         self._send(data + b"\r\n")
         response = self._read_response(timeout_secs)
         return response
@@ -302,7 +311,7 @@ class ChiTuPrinter:
             self._serial_port.timeout = timeout_secs
         readSerialData = True
         while readSerialData:
-            response = self._serial_port.readline().decode('utf-8')
+            response = self._serial_port.readline().decode("utf-8")
             if response != "":  # presumably this is the timeout popping
                 if response == "ok":
                     response = ""  # discard heart beats

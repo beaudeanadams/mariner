@@ -31,7 +31,9 @@ class UnexpectedResponseLineNumber(MarinerException):
         return "Incorrect Response Line Number"
 
     def get_description(self) -> str:
-        return ("The printer returned response for command " +
-                f"{repr(self.response)} when Mariner3D " +
-                "expected Line" +
-                "Number {self.expected}")
+        return (
+            "The printer returned response for command "
+            + f"{repr(self.response)} when Mariner3D "
+            + "expected Line"
+            + "Number {self.expected}"
+        )
