@@ -185,7 +185,7 @@ class ChiTuPrinter:
                 logger.debug(f"Looking for a file with size {self._totalbyteCount}")
                 directory = os.fsencode(config.get_files_directory())
                 for file in os.listdir(directory):
-                    if os.stat(os.path.join(directory, 
+                    if os.stat(os.path.join(directory,
                                             file)).st_size == self._totalbyteCount:
                         logger.debug(
                             f"found {os.fsdecode(file)} -" +
