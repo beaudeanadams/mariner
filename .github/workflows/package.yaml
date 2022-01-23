@@ -3,7 +3,6 @@ name: "Package mariner3d as .deb"
 
 # yamllint disable-line rule:truthy
 on:
-  push:
   release:
     types: [published]
 
